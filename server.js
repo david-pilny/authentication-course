@@ -12,22 +12,23 @@ app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to the API.'
+    message: 'Welcome to the API.',
   })
 })
 
 app.get('/dashboard', (req, res) => {
   res.json({
-    events: events
+    events: events,
   })
 })
 
 app.post('/register', (req, res) => {
+  console.log(req.body)
   if (req.body) {
     const user = {
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
       // In a production app, you'll want to encrypt the password
     }
 
@@ -37,7 +38,7 @@ app.post('/register', (req, res) => {
     if (dbUserEmail === req.body.email) {
       res.sendStatus(400)
     } else {
-      fs.writeFile('./db/user.json', data, err => {
+      fs.writeFile('./db/user.json', data, (err) => {
         if (err) {
           console.log(err + data)
         } else {
@@ -46,7 +47,7 @@ app.post('/register', (req, res) => {
           res.json({
             token,
             email: user.email,
-            name: user.name
+            name: user.name,
           })
         }
       })
@@ -69,7 +70,7 @@ app.post('/login', (req, res) => {
     res.json({
       token,
       email: userInfo.email,
-      name: userInfo.name
+      name: userInfo.name,
     })
   } else {
     res.sendStatus(400)
@@ -77,7 +78,7 @@ app.post('/login', (req, res) => {
 })
 
 // MIDDLEWARE
-function verifyToken (req, res, next) {
+function verifyToken(req, res, next) {
   const bearerHeader = req.headers['authorization']
 
   if (typeof bearerHeader !== 'undefined') {
